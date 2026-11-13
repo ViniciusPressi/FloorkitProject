@@ -3,19 +3,11 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { BuildingSession, Floorkit } from "@opengeometry/floorkit";
 import wasmURL from "opengeometry/opengeometry_bg.wasm?url";
 import { BaseModel } from "./Models/EmptyModel";
-import { applyMassModel, mass, storeys } from "./Models/MassModel";
+import { applyMassModel } from "./Models/MassModel";
 import { getMassQuantities } from "./Models/BuildingMetrics";
-import {
-  setSegmentHeight,
-  setSegmentColor,
-  makeGroundParking,
-  setSetback,
-} from "./Models/MassCommands";
-import {
-  resizeFootprint,
-  moveFootprint,
-  applyFootprintChange,
-} from "./Models/EditCommands";
+import { MassEditorController } from "./DrawFunctions/MassEditorControl";
+import { createRoot } from "react-dom/client";
+
 //import { WallDrawingTool } from "./DrawFunctions/DrawWall";
 
 const model = new BaseModel();
@@ -42,31 +34,6 @@ async function main(): Promise<void> {
   const session = new BuildingSession(model); //EMPTY MODEL
   applyMassModel(session); //CREATE MODEL MASS
 
-  // Increase the tower height to 9 meters
-  //setSegmentHeight(session, "tower", 12);
-
-  // Change the podium color
-  //setSegmentColor(session, "podium", "#d98c5f");
-
-  // Change the ground floor to parking
-  //makeGroundParking(session);
-
-  // Change the setback to 5 meters
-  //setSetback(session, 5);
-  // Keep a reference to the latest mass data
-
-  // EDIT COMMANDS
-  let currentMass = mass;
-  // Resize the tower from 8 x 6 m to 10 x 8 m
-  //currentMass = resizeFootprint(currentMass, "tower", 10, 8);
-
-  //applyFootprintChange(session, currentMass, storeys);
-
-  // Move the tower 1 meter along X
-  //currentMass = moveFootprint(currentMass, "tower", 1, 0);
-
-  //applyFootprintChange(session, currentMass, storeys);
-
   const quantities = getMassQuantities(session);
   if (quantities) {
     console.table({
@@ -77,8 +44,18 @@ async function main(): Promise<void> {
       "Number of storeys": quantities.numberOfStoreys,
     });
   }
-
   scene.add(session.root);
+
+  // Create the React editor
+  const editorContainer = document.createElement("div");
+  editorContainer.style.position = "fixed";
+  editorContainer.style.top = "20px";
+  editorContainer.style.left = "20px";
+  editorContainer.style.zIndex = "1000";
+  document.body.appendChild(editorContainer);
+  createRoot(editorContainer).render(
+    <MassEditorController session={session} />,
+  );
 
   const resize = (): void => {
     const width = Math.max(1, container.clientWidth);
