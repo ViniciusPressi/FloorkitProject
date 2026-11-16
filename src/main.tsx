@@ -10,6 +10,8 @@ import wasmURL from "opengeometry/opengeometry_bg.wasm?url";
 import { BaseModel } from "./Models/EmptyModel";
 import { applyMassModel } from "./Models/MassModel";
 import { getMassQuantities } from "./Models/BuildingMetrics";
+import { MassMetrics } from "./UI/MetricsViewer";
+import { createRoot } from "react-dom/client";
 
 //import { WallDrawingTool } from "./DrawFunctions/DrawWall";
 
@@ -63,13 +65,14 @@ async function main(): Promise<void> {
     },
   });
 
-  // Create the React editor
-  /*const editorContainer = document.createElement("div");
-  editorContainer.style.position = "fixed";
-  editorContainer.style.top = "20px";
-  editorContainer.style.left = "20px";
-  editorContainer.style.zIndex = "1000";
-  document.body.appendChild(editorContainer);*/
+  // Create the React metrics viewer
+  const metricsContainer = document.createElement("div");
+  metricsContainer.style.position = "fixed";
+  metricsContainer.style.top = "20px";
+  metricsContainer.style.left = "20px";
+  metricsContainer.style.zIndex = "1000";
+  document.body.appendChild(metricsContainer);
+  createRoot(metricsContainer).render(<MassMetrics session={session} />);
 
   const resize = (): void => {
     const width = Math.max(1, container.clientWidth);

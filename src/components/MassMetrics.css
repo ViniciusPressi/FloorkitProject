@@ -1,0 +1,38 @@
+.mass-metrics {
+  width: 260px;
+  padding: 16px;
+  background: var(--panel-bg, #ffffff);
+  border: 1px solid var(--border, #dddddd);
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+.mass-metrics h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mass-metrics__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mass-metrics__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.mass-metrics__label {
+  font-size: 13px;
+  color: var(--text-secondary, #777777);
+}
+
+.mass-metrics__value {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
