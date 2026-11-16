@@ -1,12 +1,15 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { BuildingSession, Floorkit } from "@opengeometry/floorkit";
+import {
+  BuildingSession,
+  Floorkit,
+  GUIEditor,
+  bindManagedSceneEditor,
+} from "@opengeometry/floorkit";
 import wasmURL from "opengeometry/opengeometry_bg.wasm?url";
 import { BaseModel } from "./Models/EmptyModel";
 import { applyMassModel } from "./Models/MassModel";
 import { getMassQuantities } from "./Models/BuildingMetrics";
-import { MassEditorController } from "./DrawFunctions/MassEditorControl";
-import { createRoot } from "react-dom/client";
 
 //import { WallDrawingTool } from "./DrawFunctions/DrawWall";
 
@@ -34,28 +37,39 @@ async function main(): Promise<void> {
   const session = new BuildingSession(model); //EMPTY MODEL
   applyMassModel(session); //CREATE MODEL MASS
 
-  const quantities = getMassQuantities(session);
-  if (quantities) {
-    console.table({
-      "Footprint area": quantities.footprintArea,
-      "Gross floor area": quantities.grossFloorArea,
-      "Gross volume": quantities.grossVolume,
-      Height: quantities.height,
-      "Number of storeys": quantities.numberOfStoreys,
-    });
-  }
+  const unsubscribe = session.subscribe(() => {
+    const quantities = getMassQuantities(session);
+
+    if (quantities) {
+      console.table({
+        "Footprint area": quantities.footprintArea,
+        "Gross floor area": quantities.grossFloorArea,
+        "Gross volume": quantities.grossVolume,
+        Height: quantities.height,
+        "Number of storeys": quantities.numberOfStoreys,
+      });
+    }
+  });
+
   scene.add(session.root);
 
+  // Initialize the Floorkit 3D editor
+  const editor = new GUIEditor(container, camera, controls);
+  // Enable selection in the Three.js scene
+  editor.enablePicking(session.root);
+  bindManagedSceneEditor(editor, session, {
+    onError: (error) => {
+      console.error("Floorkit rejected the edit:", error);
+    },
+  });
+
   // Create the React editor
-  const editorContainer = document.createElement("div");
+  /*const editorContainer = document.createElement("div");
   editorContainer.style.position = "fixed";
   editorContainer.style.top = "20px";
   editorContainer.style.left = "20px";
   editorContainer.style.zIndex = "1000";
-  document.body.appendChild(editorContainer);
-  createRoot(editorContainer).render(
-    <MassEditorController session={session} />,
-  );
+  document.body.appendChild(editorContainer);*/
 
   const resize = (): void => {
     const width = Math.max(1, container.clientWidth);
@@ -70,6 +84,7 @@ async function main(): Promise<void> {
 
   renderer.setAnimationLoop(() => {
     controls.update();
+    editor.update();
     renderer.render(scene, camera);
   });
 }
