@@ -4,6 +4,7 @@ import "../components/MassMetrics.css";
 import {
   getMassQuantities,
   type MassQuantities,
+  getSiteCoverage,
 } from "../Models/BuildingMetrics";
 
 interface MassMetricsProps {
@@ -24,16 +25,18 @@ export function MassMetrics({ session }: MassMetricsProps) {
   const [quantities, setQuantities] = useState<MassQuantities | undefined>(() =>
     getMassQuantities(session),
   );
+  const [siteCoverage, setSiteCoverage] = useState<number | undefined>(() =>
+    getSiteCoverage(session),
+  );
 
   useEffect(() => {
     const updateMetrics = () => {
       setQuantities(getMassQuantities(session));
+      setSiteCoverage(getSiteCoverage(session));
     };
 
-    // Get the latest quantities when the component mounts.
     updateMetrics();
 
-    // Subscribe to building changes.
     const unsubscribe = session.subscribe(updateMetrics);
 
     return unsubscribe;
@@ -52,6 +55,11 @@ export function MassMetrics({ session }: MassMetricsProps) {
       label: "Footprint Area",
       value: formatNumber(quantities.footprintArea),
       unit: "m²",
+    },
+    {
+      label: "Site Coverage",
+      value: siteCoverage !== undefined ? formatNumber(siteCoverage) : "—",
+      unit: "%",
     },
     {
       label: "Gross Floor Area",

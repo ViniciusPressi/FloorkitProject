@@ -38,6 +38,7 @@ async function main(): Promise<void> {
 
   const session = new BuildingSession(model); //EMPTY MODEL
   applyMassModel(session); //CREATE MODEL MASS
+  console.log("Current model sites:", session.snapshot().site);
 
   const unsubscribe = session.subscribe(() => {
     const quantities = getMassQuantities(session);
