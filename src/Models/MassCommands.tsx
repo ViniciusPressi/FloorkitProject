@@ -24,6 +24,7 @@ export function setSegmentHeight(
   }
 }
 
+const originalSegmentColors = new Map<string, string | undefined>();
 // Change or remove the color of a mass segment
 export function setSegmentColor(
   session: BuildingSession,
@@ -39,6 +40,26 @@ export function setSegmentColor(
 
   if (command) {
     session.apply(command, session.revision);
+  }
+}
+
+export function setMassComplianceColor(
+  session: BuildingSession,
+  compliant: boolean,
+): void {
+  const building = session
+    .snapshot()
+    .buildings.find((building) => building.id === BUILDING_ID);
+
+  if (!building?.mass) return;
+
+  for (const segment of building.mass.segments) {
+    // Store the original color only once.
+    if (!originalSegmentColors.has(segment.id)) {
+      originalSegmentColors.set(segment.id, segment.color);
+    }
+    const color = compliant ? originalSegmentColors.get(segment.id) : "#e05252";
+    setSegmentColor(session, segment.id, color);
   }
 }
 

@@ -50,6 +50,7 @@ export const mass: BmMass = {
       height: 4,
       use: "retail",
       storeyIds: ["ground"],
+      color: "#4e809c",
     },
     {
       id: "tower",
@@ -64,6 +65,7 @@ export const mass: BmMass = {
       height: 6,
       use: "residential",
       storeyIds: ["first", "second"],
+      color: "#7dcbf8",
     },
   ],
 };

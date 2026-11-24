@@ -5,7 +5,9 @@ import {
   getMassQuantities,
   type MassQuantities,
   getSiteCoverage,
+  getMassCa,
 } from "../Models/BuildingMetrics";
+import { mass } from "../Models/MassModel";
 
 interface MassMetricsProps {
   session: BuildingSession;
@@ -28,11 +30,15 @@ export function MassMetrics({ session }: MassMetricsProps) {
   const [siteCoverage, setSiteCoverage] = useState<number | undefined>(() =>
     getSiteCoverage(session),
   );
+  const [massCa, setMassCa] = useState<number | undefined>(() =>
+    getMassCa(session),
+  );
 
   useEffect(() => {
     const updateMetrics = () => {
       setQuantities(getMassQuantities(session));
       setSiteCoverage(getSiteCoverage(session));
+      setMassCa(getMassCa(session));
     };
 
     updateMetrics();
@@ -55,6 +61,11 @@ export function MassMetrics({ session }: MassMetricsProps) {
       label: "Footprint Area",
       value: formatNumber(quantities.footprintArea),
       unit: "m²",
+    },
+    {
+      label: "Floor Area Ratio",
+      value: massCa !== undefined ? formatNumber(massCa) : "—",
+      unit: "",
     },
     {
       label: "Site Coverage",

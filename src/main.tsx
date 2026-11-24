@@ -12,6 +12,7 @@ import { applyMassModel } from "./Models/MassModel";
 import { getMassQuantities } from "./Models/BuildingMetrics";
 import { MassMetrics } from "./UI/MetricsViewer";
 import { createRoot } from "react-dom/client";
+import { ZoningMetricsViewer } from "./UI/ZoningViewer";
 
 //import { WallDrawingTool } from "./DrawFunctions/DrawWall";
 
@@ -29,7 +30,7 @@ async function main(): Promise<void> {
   sun.position.set(4, 8, 6);
   scene.add(sun);
 
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
   camera.position.set(17, 13, 17);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   container.appendChild(renderer.domElement);
@@ -38,11 +39,20 @@ async function main(): Promise<void> {
 
   const session = new BuildingSession(model); //EMPTY MODEL
   applyMassModel(session); //CREATE MODEL MASS
-  console.log("Current model sites:", session.snapshot().site);
 
-  const unsubscribe = session.subscribe(() => {
+  /*console.log("Site:", session.snapshot().site);
+
+  session.root.traverse((object) => {
+    console.log({
+      name: object.name,
+      type: object.type,
+      userData: object.userData,
+      isMesh: object instanceof THREE.Mesh,
+    });
+  });*/
+
+  /*const unsubscribe = session.subscribe(() => {
     const quantities = getMassQuantities(session);
-
     if (quantities) {
       console.table({
         "Footprint area": quantities.footprintArea,
@@ -52,7 +62,7 @@ async function main(): Promise<void> {
         "Number of storeys": quantities.numberOfStoreys,
       });
     }
-  });
+  });*/
 
   scene.add(session.root);
 
@@ -74,6 +84,13 @@ async function main(): Promise<void> {
   metricsContainer.style.zIndex = "1000";
   document.body.appendChild(metricsContainer);
   createRoot(metricsContainer).render(<MassMetrics session={session} />);
+  const zoningContainer = document.createElement("div");
+  zoningContainer.style.position = "fixed";
+  zoningContainer.style.top = "300px";
+  zoningContainer.style.left = "20px";
+  zoningContainer.style.zIndex = "1000";
+  document.body.appendChild(zoningContainer);
+  createRoot(zoningContainer).render(<ZoningMetricsViewer session={session} />);
 
   const resize = (): void => {
     const width = Math.max(1, container.clientWidth);

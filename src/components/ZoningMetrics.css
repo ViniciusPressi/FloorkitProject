@@ -1,0 +1,95 @@
+.zoning-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 260px;
+  padding: 16px;
+  background: var(--panel-bg, #ffffff);
+  border: 1px solid var(--border, #dddddd);
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+.zoning-metrics h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.zoning-metrics h4 {
+  margin: 0;
+}
+
+.zoning-metrics__status {
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.zoning-metrics__status--success {
+  color: #26734d;
+  background: #e5f4eb;
+}
+
+.zoning-metrics__status--error {
+  color: #b42318;
+  background: #fce8e6;
+}
+
+.zoning-metrics__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zoning-metrics__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.zoning-metrics__label {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.zoning-metrics__value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.zoning-metrics__violations {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zoning-metrics__violations ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.zoning-metrics__violation {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px;
+  border-left: 3px solid #d92d20;
+  background: var(--surface-secondary);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.zoning-metrics__violation p {
+  margin: 0;
+}
+
+.zoning-metrics__violation span {
+  color: var(--text-secondary);
+  font-size: 12px;
+}

@@ -46,6 +46,30 @@ export function getPolygonArea(polygon: PolygonProfile): number {
   return Math.max(0, outerArea - holesArea);
 }
 
+export function getMassCa(session: BuildingSession): number | undefined {
+  const model = session.snapshot();
+
+  const site = model.site;
+
+  if (!site?.boundary) {
+    return undefined;
+  }
+
+  const massQuantities = getMassQuantities(session);
+
+  if (!massQuantities) {
+    return undefined;
+  }
+
+  const siteArea = getPolygonArea(site.boundary);
+
+  if (siteArea <= 0) {
+    return undefined;
+  }
+
+  return massQuantities.grossFloorArea / siteArea;
+}
+
 export function getSiteCoverage(session: BuildingSession): number | undefined {
   const model = session.snapshot();
 
